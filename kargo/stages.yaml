@@ -15,7 +15,7 @@ spec:
       steps:
       - uses: git-clone
         config:
-          repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+          repoURL: https://github.com/jagadamma/kargo.git
           checkout:
           - branch: main
             path: ./repo
@@ -40,7 +40,7 @@ spec:
           - name: nginx-dev
             namespace: argocd
             sources:
-            - repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+            - repoURL: https://github.com/jagadamma/kargo.git
               desiredCommitFromStep: commit
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -61,7 +61,7 @@ spec:
       steps:
       - uses: git-clone
         config:
-          repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+          repoURL: https://github.com/jagadamma/kargo.git
           checkout:
           - branch: main
             path: ./repo
@@ -86,7 +86,7 @@ spec:
           - name: nginx-staging
             namespace: argocd
             sources:
-            - repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+            - repoURL: https://github.com/jagadamma/kargo.git
               desiredCommitFromStep: commit
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -107,7 +107,7 @@ spec:
       steps:
       - uses: git-clone
         config:
-          repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+          repoURL: https://github.com/jagadamma/kargo.git
           checkout:
           - branch: main
             path: ./repo
@@ -132,5 +132,5 @@ spec:
           - name: nginx-prod
             namespace: argocd
             sources:
-            - repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+            - repoURL: https://github.com/jagadamma/kargo.git
               desiredCommitFromStep: commit
