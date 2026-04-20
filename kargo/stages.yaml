@@ -1,0 +1,136 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: dev
+  namespace: nginx-poc
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: nginx-warehouse
+    sources:
+      direct: true
+  promotionTemplate:
+    spec:
+      steps:
+      - uses: git-clone
+        config:
+          repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+          checkout:
+          - branch: main
+            path: ./repo
+      - uses: kustomize-set-image
+        config:
+          path: ./repo/env/dev
+          images:
+          - image: nginx
+      - uses: git-commit
+        as: commit
+        config:
+          path: ./repo
+          messageFromSteps:
+          - kustomize-set-image
+      - uses: git-push
+        config:
+          path: ./repo
+          targetBranch: main
+      - uses: argocd-update
+        config:
+          apps:
+          - name: nginx-dev
+            namespace: argocd
+            sources:
+            - repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+              desiredCommitFromStep: commit
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: staging
+  namespace: nginx-poc
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: nginx-warehouse
+    sources:
+      stages:
+      - dev
+  promotionTemplate:
+    spec:
+      steps:
+      - uses: git-clone
+        config:
+          repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+          checkout:
+          - branch: main
+            path: ./repo
+      - uses: kustomize-set-image
+        config:
+          path: ./repo/env/staging
+          images:
+          - image: nginx
+      - uses: git-commit
+        as: commit
+        config:
+          path: ./repo
+          messageFromSteps:
+          - kustomize-set-image
+      - uses: git-push
+        config:
+          path: ./repo
+          targetBranch: main
+      - uses: argocd-update
+        config:
+          apps:
+          - name: nginx-staging
+            namespace: argocd
+            sources:
+            - repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+              desiredCommitFromStep: commit
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: nginx-poc
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: nginx-warehouse
+    sources:
+      stages:
+      - staging
+  promotionTemplate:
+    spec:
+      steps:
+      - uses: git-clone
+        config:
+          repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+          checkout:
+          - branch: main
+            path: ./repo
+      - uses: kustomize-set-image
+        config:
+          path: ./repo/env/prod
+          images:
+          - image: nginx
+      - uses: git-commit
+        as: commit
+        config:
+          path: ./repo
+          messageFromSteps:
+          - kustomize-set-image
+      - uses: git-push
+        config:
+          path: ./repo
+          targetBranch: main
+      - uses: argocd-update
+        config:
+          apps:
+          - name: nginx-prod
+            namespace: argocd
+            sources:
+            - repoURL: https://github.com/YOUR_ORG/nginx-kargo-poc.git
+              desiredCommitFromStep: commit
