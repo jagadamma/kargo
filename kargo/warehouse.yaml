@@ -1,0 +1,11 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: nginx-warehouse
+  namespace: nginx-poc
+spec:
+  subscriptions:
+  - image:
+      repoURL: public.ecr.aws/nginx/nginx
+      semverConstraint: "^1.25.0"
+      discoveryLimit: 5
